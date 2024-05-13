@@ -1,4 +1,4 @@
-use axum::{extract, Json};
+use axum::Json;
 use serde::{Deserialize, Serialize};
 
 use crate::helpers::responses::CustomResponse;
@@ -27,8 +27,9 @@ pub struct Event {
 	pub payload: ReturnPayload,
 }
 
+#[worker::send]
 pub async fn post_event(
-	extract::Json(payload): extract::Json<Payload>,
+	Json(payload): Json<Payload>,
 ) -> Result<Json<CustomResponse>, Json<CustomResponse>> {
 	let return_payload = ReturnPayload {
 		user_id: payload.user_id.clone(),

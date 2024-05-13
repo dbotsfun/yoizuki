@@ -1,12 +1,19 @@
 [package]
 name = "yoizuki"
+description = "Private webhooks microservice"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 authors = ["Chikof <chiko@envs.net>"]
+repository = "https://github.com/dbots/yoisuki"
 
 [package.metadata.release]
 release = false
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
 
 # https://github.com/rustwasm/wasm-pack/issues/1247
 [package.metadata.wasm-pack.profile.release]
