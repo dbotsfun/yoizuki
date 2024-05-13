@@ -1,0 +1,9 @@
+use axum::Json;
+
+use crate::helpers::responses::CustomResponse;
+
+pub async fn main_route() -> Json<CustomResponse> {
+    Jsonn(CustomResponse {
+        message: "Hello, World!".to_string(),
+    })
+}
