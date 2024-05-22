@@ -1,14 +1,28 @@
 use axum::Json;
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
-use crate::helpers::responses::CustomResponse;
+use crate::helpers::{responses::CustomResponse, validator::ValidatedForm};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct Payload {
+	#[validate(length(min = 18, max = 19, message = "Invalid user ID"))]
+	#[serde(rename = "userId")]
 	pub user_id: String,
+
+	#[validate(length(min = 18, max = 19, message = "Invalid bot ID"))]
+	#[serde(rename = "botId")]
 	pub bot_id: String,
+
+	#[validate(length(min = 1))]
 	pub query: String,
+
+	#[validate(length(min = 1))]
 	pub name: String,
+
+	#[validate(url)]
+	#[serde(rename = "webhookUrl")]
 	pub webhook_url: String,
 }
 
@@ -27,10 +41,13 @@ pub struct Event {
 	pub payload: ReturnPayload,
 }
 
+/// Response type for the event endpoint
+pub type EventResponse = (StatusCode, Json<CustomResponse>);
+
 #[worker::send]
 pub async fn post_event(
-	Json(payload): Json<Payload>,
-) -> Result<Json<CustomResponse>, Json<CustomResponse>> {
+	ValidatedForm(payload): ValidatedForm<Payload>,
+) -> Result<EventResponse, EventResponse> {
 	let return_payload = ReturnPayload {
 		user_id: payload.user_id.clone(),
 		bot_id: payload.bot_id.clone(),
@@ -50,17 +67,26 @@ pub async fn post_event(
 	match response {
 		Ok(response) => {
 			if response.status().is_success() {
-				Ok(Json(CustomResponse {
-					message: "Event sent successfully".to_string(),
-				}))
+				Ok((
+					StatusCode::OK,
+					Json(CustomResponse {
+						message: "Event sent successfully".to_string(),
+					}),
+				))
 			} else {
-				Ok(Json(CustomResponse {
-					message: format!("Failed to send event: {}", response.status()),
-				}))
+				Ok((
+					StatusCode::OK,
+					Json(CustomResponse {
+						message: format!("Failed to send event: {}", response.status()),
+					}),
+				))
 			}
 		}
-		Err(e) => Ok(Json(CustomResponse {
-			message: format!("Failed to send event: {}", e),
-		})),
+		Err(e) => Err((
+			StatusCode::INTERNAL_SERVER_ERROR,
+			Json(CustomResponse {
+				message: format!("Failed to send event: {}", e),
+			}),
+		)),
 	}
 }
