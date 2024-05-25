@@ -15,12 +15,6 @@ pub struct Payload {
 	#[serde(rename = "botId")]
 	pub bot_id: String,
 
-	#[validate(length(min = 1))]
-	pub query: String,
-
-	#[validate(length(min = 1))]
-	pub name: String,
-
 	pub secret: String,
 
 	#[validate(url)]
@@ -32,8 +26,6 @@ pub struct Payload {
 pub struct ReturnPayload {
 	pub user_id: String,
 	pub bot_id: String,
-	pub query: String,
-	pub name: String,
 	pub secret: String,
 }
 
@@ -54,8 +46,6 @@ pub async fn post_event(
 	let return_payload = ReturnPayload {
 		user_id: payload.user_id.clone(),
 		bot_id: payload.bot_id.clone(),
-		query: payload.query.clone(),
-		name: payload.name.clone(),
 		secret: payload.secret.clone(),
 	};
 
