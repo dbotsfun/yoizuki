@@ -21,6 +21,8 @@ pub struct Payload {
 	#[validate(length(min = 1))]
 	pub name: String,
 
+	pub secret: String,
+
 	#[validate(url)]
 	#[serde(rename = "webhookUrl")]
 	pub webhook_url: String,
@@ -32,6 +34,7 @@ pub struct ReturnPayload {
 	pub bot_id: String,
 	pub query: String,
 	pub name: String,
+	pub secret: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -53,6 +56,7 @@ pub async fn post_event(
 		bot_id: payload.bot_id.clone(),
 		query: payload.query.clone(),
 		name: payload.name.clone(),
+		secret: payload.secret.clone(),
 	};
 
 	let response = reqwest::Client::new()
