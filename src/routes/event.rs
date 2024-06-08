@@ -1,9 +1,8 @@
+use crate::helpers::{responses::CustomResponse, validator::ValidatedForm};
 use axum::Json;
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
-
-use crate::helpers::{responses::CustomResponse, validator::ValidatedForm};
 
 #[derive(Deserialize, Validate)]
 pub struct Payload {
@@ -15,8 +14,8 @@ pub struct Payload {
 	#[serde(rename = "botId")]
 	pub bot_id: String,
 
-    #[validate(length(min = 1, message = "Name cannot be empty"))]
-    pub name: String,
+	#[validate(length(min = 1, message = "Name cannot be empty"))]
+	pub name: String,
 
 	pub secret: String,
 
@@ -30,7 +29,7 @@ pub struct ReturnPayload {
 	pub user_id: String,
 	pub bot_id: String,
 	pub secret: String,
-    pub name: String,
+	pub name: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -48,7 +47,7 @@ pub async fn post_event(
 	ValidatedForm(payload): ValidatedForm<Payload>,
 ) -> Result<EventResponse, EventResponse> {
 	let return_payload = ReturnPayload {
-        name: payload.name.clone(),
+		name: payload.name.clone(),
 		user_id: payload.user_id.clone(),
 		bot_id: payload.bot_id.clone(),
 		secret: payload.secret.clone(),

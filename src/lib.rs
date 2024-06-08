@@ -2,7 +2,13 @@ use worker::*;
 
 use tower_service::Service;
 mod helpers;
+mod middlewares;
 mod routes;
+
+#[derive(Clone)]
+pub struct AppState {
+	pub env: Env,
+}
 
 #[event(fetch)]
 async fn fetch(
