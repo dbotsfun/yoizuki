@@ -35,4 +35,4 @@ console_error_panic_hook = { version = "0.1.1" }
 serde = { version = "1.0.210", features = ["derive"] }
 reqwest = { version = "0.12", features = ["json"] }
 thiserror = "1.0.60"
-validator = { version = "0.18.1", features = ["derive"] }
+validator = { version = "0.20.0", features = ["derive"] }
